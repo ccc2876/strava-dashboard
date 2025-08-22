@@ -96,19 +96,19 @@ export const ActivitiesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch activities once
-  useEffect(() => {
-    fetch("/runs.json")
-      .then((res) => res.json())
-      .then((data) => {
-        setActivities(data);
-        setLoading(false);
-      })
-      .catch((err) => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+ useEffect(() => {
+  async function loadActivities() {
+    try {
+      const res = await fetch("/api/runs");
+      if (!res.ok) throw new Error("API error " + res.status);
+      const data = await res.json();
+      setActivities(data);
+    } catch (err) {
+      console.error("Error loading runs:", err);
+    }
+  }
+  loadActivities();
+}, []);
 
   // Always call hooks at top-level
   const weekRuns = useMemo(() => {
