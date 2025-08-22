@@ -97,17 +97,16 @@ export const ActivitiesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [loading, setLoading] = useState(true);
 
  useEffect(() => {
-  async function loadActivities() {
+  async function loadRuns() {
     try {
       const res = await fetch("/api/runs");
-      if (!res.ok) throw new Error("API error " + res.status);
       const data = await res.json();
-      setActivities(data);
+      setActivities(data); // assuming you already have setActivities
     } catch (err) {
       console.error("Error loading runs:", err);
     }
   }
-  loadActivities();
+  loadRuns();
 }, []);
 
   // Always call hooks at top-level
