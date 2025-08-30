@@ -2,6 +2,9 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDarkMode } from '../DarkModeContext';
 import { useActivities } from '../ActivitiesContext';
+import '../App.css'; 
+import '../index.css'; 
+
 
 function formatTime(seconds: number) {
   const mins = Math.floor(seconds / 60);

@@ -6,8 +6,12 @@ html, body, #root {
 }
 body {
   font-family: sans-serif;
-  background-color: #fff;
+  background-color: #f9f9f9; /* Light mode background */
   color: #222;
+}
+.dark body {
+  background-color: #000; /* Black background for dark mode */
+  color: #eee;
 }
 header {
   display: flex;
@@ -42,6 +46,13 @@ button.custom:hover {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  background-color: #fff; /* White background for light mode, matching WeeklyDetails */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e5e7eb; /* Border matching Tailwind gray-200 */
+}
+.dark .card {
+  background-color: #1f2937; /* Gray-800 for dark mode, matching WeeklyDetails */
+  border: 1px solid #374151; /* Border matching Tailwind gray-700 */
 }
 .card h2 {
   margin-top: 0;

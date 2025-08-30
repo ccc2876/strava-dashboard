@@ -9,6 +9,8 @@ import {
 
 import { BrowserRouter, Link, useNavigate } from 'react-router-dom';
 import './App.css'; 
+import './index.css'; 
+
 import { useDarkMode } from './DarkModeContext';
 import { useActivities } from './ActivitiesContext';
 
@@ -68,6 +70,21 @@ export default function Dashboard() {
       { name: 'Marathon', target: 26.2 }
     ];
 
+    function formatDuration(ms) {
+      const totalSeconds = Math.floor(ms / 1000);
+      const hours = Math.floor(totalSeconds / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      const milliseconds = ms % 1000;
+
+      return `${hours.toString().padStart(2,'0')}:${minutes.toString().padStart(2,'0')}:${seconds.toString().padStart(2,'0')}.${milliseconds.toString().padStart(3,'0')}`;
+    }
+    function formatTime(totalSeconds: number) {
+      const hrs = Math.floor(totalSeconds / 3600);
+      const mins = Math.floor((totalSeconds % 3600) / 60);
+      const secs = Math.floor(totalSeconds % 60);
+      return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    }
         
       // Define isRace helper here
     const isRace = (act) =>
@@ -463,30 +480,22 @@ export default function Dashboard() {
   return (
 
     <div className={darkMode ? 'container dark' : 'container'}>
-      <header>
-        <button onClick={toggleDarkMode}>
+      <header style={{ padding: 10 }}>
+        <button
+          onClick={toggleDarkMode}
+          style={{
+            padding: '0.8rem 2rem', // Larger button
+            fontSize: '1.5rem', // Larger font/icon
+            border: 'none',
+            backgroundColor: darkMode ? '#5a5ac4' : '#8884d8',
+            color: 'white',
+            borderRadius: '5px',
+            cursor: 'pointer',
+          }}
+        >
           {darkMode ? '☀️' : '🌙'}
         </button>
       </header>
-      {/* New PR Banner */}
-      {hasNewPrThisWeek && (
-        <div
-          style={{
-            backgroundColor: darkMode ? '#4caf50' : '#d0f0c0',
-            color: darkMode ? '#fff' : '#2e7d32',
-            padding: '1rem',
-            marginBottom: '1rem',
-            borderRadius: '6px',
-            fontWeight: 'bold',
-            textAlign: 'center',
-            boxShadow: darkMode
-              ? '0 0 10px 2px rgba(76,175,80,0.7)'
-              : '0 0 10px 2px rgba(144,238,144,0.7)',
-          }}
-        >
-          🎉 Congrats! You set a new Personal Record this week! 🎉
-        </div>
-      )}
 
      <div
   style={{
@@ -498,25 +507,13 @@ export default function Dashboard() {
 >
   {/* Left column: Weekly + 30-Day summaries stacked vertically */}
 
-  <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', flex: '0 0 300px' }}>
+  <div className="card" style={{display: 'flex', flexDirection: 'column', gap: '2rem', flex: '0 0 300px' }}>
             {/* Summary card is wrapped in a Link */}
            
     {/* Weekly Summary Card */}
     {weeklySummary && (
       <Link to="/weekly" style={{ textDecoration: 'none' }}>
-      <div
-      className="card"
-      style={{
-        padding: '1rem',
-        color: darkMode ? '#eee' : '#000',
-        backgroundColor: darkMode ? '#222' : '#f9f9f9',
-        boxShadow: darkMode
-          ? '0 2px 6px rgba(0,0,0,0.8)'
-          : '0 2px 6px rgba(0,0,0,0.1)',
-        borderRadius: 8,
-        cursor: 'pointer', // so it looks clickable
-      }}
-    >
+      <div className="card">
         <h2>This Week's Summary</h2>
         <p><strong>Total Runs:</strong> {weeklySummary.runs}</p>
         <p><strong>Total Distance:</strong> {weeklySummary.distance} mi</p>
@@ -535,19 +532,7 @@ export default function Dashboard() {
 
     {rolling30DayStats && (
         <Link to="/monthly" style={{ textDecoration: 'none' }}>
-          <div
-            className="card"
-            style={{
-              padding: '1rem',
-              color: darkMode ? '#eee' : '#000',
-              backgroundColor: darkMode ? '#222' : '#f5f5f5',
-              borderRadius: '8px',
-              boxShadow: darkMode
-                ? '0 2px 8px rgba(255, 255, 255, 0.1)'
-                : '0 2px 8px rgba(0, 0, 0, 0.1)',
-              cursor: 'pointer',
-            }}
-          >
+          <div className="card">
             <h2>Rolling 30-Day Stats</h2>
             <p><strong>Total Runs:</strong> {rolling30DayStats.totalRuns30}</p>
             <p><strong>Total Distance:</strong> {rolling30DayStats.totalDistance30.toFixed(1)} mi</p>
@@ -566,21 +551,8 @@ export default function Dashboard() {
 </div>
 
   {/* Right column: PRs Card */}
-  <div
-    className="card"
-    style={{
-      flex: 1,
-      padding: '1rem',
-      color: darkMode ? '#eee' : '#000',
-      backgroundColor: darkMode ? '#222' : '#f9f9f9',
-      boxShadow: darkMode
-        ? '0 2px 6px rgba(0,0,0,0.8)'
-        : '0 2px 6px rgba(0,0,0,0.1)',
-      borderRadius: 8,
-      maxHeight: 460,
-      overflowY: 'auto',
-    }}
-  >
+  
+  <div className="card">
     <h2>Personal Records (PRs)</h2>
     <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
       {prs.map((pr) => {
@@ -609,29 +581,35 @@ export default function Dashboard() {
         );
       })}
     </ul>
+    </div>
   </div>
-</div>
 
 
 
-        <div style={{ flex: 1, minWidth: 300 }}>
-          <h2>Annual Mileage</h2>
-        {annualMileage.length > 0 && (
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={annualMileage}>
-              <XAxis dataKey="year" />
-              <YAxis />
-              <Bar dataKey="miles" fill="#8884d8" />
-            </BarChart>
-          </ResponsiveContainer>
-        )}
+{/* Annual Mileage Section */}
+      <div className="card">
+
+      <div style={{ flex: '1 1 300px', minWidth: 300 }}>
+        <h2>Annual Mileage</h2>
+        <ResponsiveContainer width="100%" height={250}>
+          <BarChart
+            data={annualMileage}
+            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+          >
+            <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#444' : '#ccc'} />
+            <XAxis dataKey="year" stroke={darkMode ? '#eee' : '#333'} />
+            <YAxis stroke={darkMode ? '#eee' : '#333'} />
+            <Tooltip contentStyle={{ backgroundColor: '#fff', color: '#000' }} />
+            <Bar dataKey="miles" fill="#8884d8" />
+          </BarChart>
+        </ResponsiveContainer>
       </div>
-      {/*</div>*/}
+    </div>
 
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '2rem' }}>
 
-       <div style={{ flex: 1, minWidth: 300, marginBottom: '2rem' }}>
-        <h2>Pace Distribution</h2>
+    <div className="card">
+<h2>Pace Distribution</h2>
         <ResponsiveContainer width="100%" height={300}>
           <AreaChart data={paceDistribution} layout="horizontal" margin={{ top: 10, right: 30, left: 0, bottom: 50 }}>
             <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#444' : '#ccc'} />
@@ -646,7 +624,9 @@ export default function Dashboard() {
           </AreaChart>
         </ResponsiveContainer>
       </div>
-          <div style={{ flex: 1, minWidth: 300 }}>
+
+      <div className="card">
+
         <h2>Pace vs Heart Rate</h2>
         <ResponsiveContainer width="100%" height={300}>
           <ScatterChart>
@@ -706,7 +686,8 @@ export default function Dashboard() {
         </ResponsiveContainer>
       </div>
 
-  <div style={{ flex: 1, minWidth: 300 }}>
+      <div className="card">
+
           <h2>Workout Activity by Time of Day</h2>
         <ResponsiveContainer width="100%" height={300}>
           <RadarChart data={timeOfDay} cx="50%" cy="50%" outerRadius="80%">
@@ -728,8 +709,10 @@ export default function Dashboard() {
       </div>
 </div>
 
-<div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-  <div style={{ flex: 1, minWidth: 300, maxWidth: '100%' }}>
+    <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '2rem' }}>
+
+    <div className="card">
+
   <h2>Run Distances</h2>
   <ResponsiveContainer width="100%" height={400}>
     <BarChart data={distanceCounts} layout="vertical" margin={{ top: 30, right: 30, left: 10, bottom: 40 }}>
@@ -752,7 +735,8 @@ export default function Dashboard() {
   </ResponsiveContainer>
 </div>
 
-<div style={{ flex: 1, minWidth: 300 }}>
+  <div className="card">
+
   <h2>Average Daily Mileage by Day</h2>
   <ResponsiveContainer width="100%" height={300}>
     <RadarChart data={mileageByDay} cx="50%" cy="50%" outerRadius="80%">
@@ -773,7 +757,8 @@ export default function Dashboard() {
 </div>
 
 {/* Indoor vs Outdoor Pie Chart */}
-  <div style={{ flex: 1, minWidth: 300 }}>
+    <div className="card">
+
         <h2>Indoor vs Outdoor Runs</h2>
         <ResponsiveContainer width="100%" height={300}>
           <PieChart>
@@ -794,10 +779,10 @@ export default function Dashboard() {
           </PieChart>
         </ResponsiveContainer>
       </div>
-      </div>
+    </div>
 
-<div style={{ display: 'flex', gap: '2rem', flexWrap: 'wrap' }}>
-  <div style={{ flex: 1, minWidth: 300 }}>
+  <div className="card">
+
     <h2>Temperature Distribution</h2>
     <ResponsiveContainer width="100%" height={250}>
       <BarChart data={tempDistribution} margin={{ top: 30, right: 30, left: 10, bottom: 40 }}>
@@ -810,7 +795,8 @@ export default function Dashboard() {
     </ResponsiveContainer>
   </div>
 
-  <div className="card" style={{ flex: 1.5, minWidth: 300, overflowX: 'auto' }}>
+    <div className="card">
+
     <h2>Year in Runs</h2>
     <div style={{ display: 'flex', gap: 2, minWidth: 365 }}>
       {(() => {
@@ -847,7 +833,6 @@ export default function Dashboard() {
       Color intensity = run distance. Darker = longer runs.
     </small>
   </div>
-</div>
 
 {/*<div style={{ width: '100%' }}>
   <h2 style={{ color: darkMode ? '#fff' : '#000' }}>Pace Breakdown</h2>
