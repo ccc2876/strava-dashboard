@@ -1,14 +1,22 @@
-require('dotenv').config();
-const axios = require('axios');
-const fs = require('fs');
-const path = require('path');
-const { kv } = require('@vercel/kv');
+import { config } from 'dotenv';
+import axios from 'axios';
+import { writeFile } from 'fs/promises';
+import { join } from 'path';
+import { createClient } from '@vercel/kv';
 
-const CACHE_DURATION = 5 * 60 * 1000; // Not used at build time, but kept for consistency
+config(); // Load .env variables
+
+const CACHE_DURATION = 5 * 60 * 1000; // Not used at build time, kept for consistency
 let cachedData = null;
 let lastFetch = 0;
 
 const TOKEN_KEY = 'strava_refresh_token'; // Key for KV store
+
+// Initialize Vercel KV client
+const kv = createClient({
+  url: process.env.KV_REST_API_URL,
+  token: process.env.KV_REST_API_TOKEN,
+});
 
 // Load refresh token from KV or fallback to env
 async function loadRefreshToken() {
@@ -63,8 +71,8 @@ async function fetchActivities() {
     }
 
     // Write to public/runs.json
-    const outputPath = path.join(process.cwd(), 'public', 'runs.json');
-    fs.writeFileSync(outputPath, JSON.stringify(allActivities, null, 2));
+    const outputPath = join(process.cwd(), 'public', 'runs.json');
+    await writeFile(outputPath, JSON.stringify(allActivities, null, 2));
     console.log(`Generated public/runs.json with ${allActivities.length} activities`);
 
     return allActivities;
