@@ -96,14 +96,16 @@ export const ActivitiesProvider: React.FC<{ children: React.ReactNode }> = ({ ch
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
 
- useEffect(() => {
+useEffect(() => {
   async function loadRuns() {
     try {
-      const res = await fetch("/api/runs");
+      const res = await fetch("/runs.json");  
       const data = await res.json();
-      setActivities(data); // assuming you already have setActivities
+      setActivities(data);
     } catch (err) {
       console.error("Error loading runs:", err);
+    } finally {
+      setLoading(false);
     }
   }
   loadRuns();
