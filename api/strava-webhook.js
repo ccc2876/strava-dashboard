@@ -17,11 +17,14 @@ export default async function handler(req, res) {
   } else if (req.method === 'POST') {
     // Handle webhook event
     const event = req.body;
-    if (event.object_type === 'activity' && event.aspect_type === 'create') {
+    if (
+      event.object_type === 'activity' &&
+      (event.aspect_type === 'create' || event.aspect_type === 'delete')
+    ) {
       const deployHook = process.env.VERCEL_DEPLOY_HOOK_URL;
       try {
         await axios.post(deployHook);
-        console.log('Deploy triggered for new activity:', event);
+        console.log(`Deploy triggered for activity ${event.aspect_type}:`, event);
       } catch (err) {
         console.error('Deploy trigger failed:', err);
       }
