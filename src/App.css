@@ -6,12 +6,12 @@ html, body, #root {
 }
 body {
   font-family: sans-serif;
-  background-color: #f9f9f9; /* Light mode background */
-  color: #222;
+  background-color: #f9fafb; /* Tailwind bg-gray-50 for light mode */
+  color: #1f2937; /* Tailwind text-gray-800 */
 }
 .dark body {
-  background-color: #000; /* Black background for dark mode */
-  color: #eee;
+  background-color: #0f172a; /* Tailwind bg-gray-950 for dark mode */
+  color: #ffffff; /* Tailwind text-white */
 }
 header {
   display: flex;
@@ -20,7 +20,6 @@ header {
   margin-bottom: 1rem;
   flex-shrink: 0;
 }
-/* Optional: Scope button styles */
 button.custom {
   padding: 0.4rem 1rem;
   border: none;
@@ -46,15 +45,69 @@ button.custom:hover {
   flex-grow: 1;
   display: flex;
   flex-direction: column;
-  background-color: #fff; /* White background for light mode, matching WeeklyDetails */
+  background-color: #fff;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb; /* Border matching Tailwind gray-200 */
+  border: 1px solid #e5e7eb; /* Tailwind border-gray-200 */
 }
 .dark .card {
-  background-color: #1f2937; /* Gray-800 for dark mode, matching WeeklyDetails */
-  border: 1px solid #374151; /* Border matching Tailwind gray-700 */
+  background-color: #1f2937; /* Tailwind bg-gray-800 */
+  border: 1px solid #374151; /* Tailwind border-gray-700 */
 }
 .card h2 {
   margin-top: 0;
   margin-bottom: 0.5rem;
+}
+.nav-button {
+  padding: 0.75rem 1.5rem; /* Larger padding for prominence */
+  border-radius: 0.4rem;
+  background-color: #3b82f6; /* Brighter blue for light mode */
+  color: #ffffff;
+  border: none;
+  cursor: pointer;
+  font-size: .75rem;
+  font-weight: 500;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.2);
+  transition: background-color 0.3s, transform 0.2s;
+}
+.nav-button:hover {
+  background-color: #2563eb;
+  transform: scale(1.05); /* Slight scale on hover */
+}
+body.dark .nav-button {
+  background-color: #2563eb; /* Vibrant blue for dark mode */
+}
+body.dark .nav-button:hover {
+  background-color: #1e40af;
+  transform: scale(1.05);
+}
+
+.heatmap {
+  display: flex;
+  gap: 0.25rem; /* Increased gap for larger squares */
+  overflow-x: auto;
+  margin: 0 auto; /* Center the heatmap */
+  max-width: 100%; /* Prevent overflow */
+}
+.heatmap-week {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.heatmap-day {
+  width: 24px; /* Larger size */
+  height: 24px;
+  border-radius: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem; /* Small font for mileage */
+  font-weight: 600;
+  color: #ffffff; /* White text for contrast on red or colored backgrounds */
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.5); /* Improve readability */
+}
+body.dark .heatmap-day {
+  color: #e5e7eb; /* Light gray text for dark mode */
+}
+body.dark .heatmap-day.empty {
+  color: #ffffff; /* Ensure white text on dark grey for readability */
 }

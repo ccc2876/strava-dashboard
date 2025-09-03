@@ -64,7 +64,9 @@ async function fetchActivities() {
           params: { per_page: 200, page },
         }
       );
-      const data = activitiesRes.data;
+      let data = activitiesRes.data;
+      // Filter to only include run activities
+      data = data.filter(act => act.type === 'Run');
       if (!data.length) break;
       allActivities = allActivities.concat(data);
       page++;

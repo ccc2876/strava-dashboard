@@ -401,10 +401,12 @@ export default function Dashboard() {
   const getIntensityColor = (miles?: number, darkMode = false) => {
       if (!miles) return darkMode ? '#2a2a2a' : '#e0e0e0';
 
-      if (miles >= 10) return '#084594'; // darkest blue
-      if (miles >= 6) return '#2171b5';
-      if (miles >= 3) return '#4292c6';
-      if (miles >= 1) return '#6baed6';
+      if (miles >= 15) return '#08306b'; // darkest blue
+      if (miles >= 12) return '#08519c'
+      if (miles >= 10) return '#2171b5'
+      if (miles >= 6) return '#4292c6';
+      if (miles >= 3) return '#6baed6';
+      if (miles >= 1) return '#9ecae1';
       return '#c6dbef'; // very light blue
     };
 
@@ -464,6 +466,12 @@ export default function Dashboard() {
       return `${hrs.toString().padStart(2, '0')}:${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     }
 
+    const handleBarClick = (data: { year: string }) => {
+      if (data && data.year) {
+        navigate(`/year/${data.year}`);
+      }
+    };
+
     const hasNewPrThisWeek = useMemo(() => {
       if (!prs || prs.length === 0) return false;
       const now = new Date();
@@ -477,21 +485,19 @@ export default function Dashboard() {
       });
     }, [prs]);
 
-  return (
+  const bgClass = darkMode ? 'bg-gray-950' : 'bg-gray-50';
+  const textClass = darkMode ? 'text-white' : 'text-gray-800';
 
-    <div className={darkMode ? 'container dark' : 'container'}>
-      <header style={{ padding: 10 }}>
+  return (
+    <div
+      className={`min-h-screen ${bgClass} ${textClass} p-4 sm:p-6`}
+      style={{ padding: '1rem', minHeight: '100vh', backgroundColor: darkMode ? '#1a202c' : '#f9fafb', color: darkMode ? '#ffffff' : '#1f2937' }}
+    >
+      <header className="flex justify-between items-center mb-6">
         <button
           onClick={toggleDarkMode}
-          style={{
-            padding: '0.8rem 2rem', // Larger button
-            fontSize: '1.5rem', // Larger font/icon
-            border: 'none',
-            backgroundColor: darkMode ? '#5a5ac4' : '#8884d8',
-            color: 'white',
-            borderRadius: '5px',
-            cursor: 'pointer',
-          }}
+          className={`p-2 rounded-full ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-200 hover:bg-gray-300'} transition`}
+          style={{ padding: '0.5rem', borderRadius: '50%', backgroundColor: darkMode ? '#374151' : '#e5e7eb' }}
         >
           {darkMode ? '☀️' : '🌙'}
         </button>
@@ -508,7 +514,6 @@ export default function Dashboard() {
   {/* Left column: Weekly + 30-Day summaries stacked vertically */}
 
   <div className="card" style={{display: 'flex', flexDirection: 'column', gap: '2rem', flex: '0 0 300px' }}>
-            {/* Summary card is wrapped in a Link */}
            
     {/* Weekly Summary Card */}
     {weeklySummary && (
@@ -586,24 +591,20 @@ export default function Dashboard() {
 
 
 
-{/* Annual Mileage Section */}
-      <div className="card">
-
-      <div style={{ flex: '1 1 300px', minWidth: 300 }}>
-        <h2>Annual Mileage</h2>
-        <ResponsiveContainer width="100%" height={250}>
-          <BarChart
-            data={annualMileage}
-            margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#444' : '#ccc'} />
-            <XAxis dataKey="year" stroke={darkMode ? '#eee' : '#333'} />
-            <YAxis stroke={darkMode ? '#eee' : '#333'} />
-            <Tooltip contentStyle={{ backgroundColor: '#fff', color: '#000' }} />
-            <Bar dataKey="miles" fill="#8884d8" />
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
+   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+        <div className={`card p-4 rounded-xl shadow-md hover:shadow-lg ${darkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-200'} border`}>
+          <h2 className={`text-2xl font-semibold mb-4 ${textClass}`}>Annual Mileage</h2>
+          <ResponsiveContainer width="100%" height={300}>
+            <BarChart data={annualMileage} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+              <CartesianGrid strokeDasharray="3 3" stroke={darkMode ? '#444' : '#ccc'} />
+              <XAxis dataKey="year" stroke={darkMode ? '#eee' : '#333'} />
+              <YAxis stroke={darkMode ? '#eee' : '#333'} label={{ value: 'Miles', angle: -90, position: 'insideLeft' }} />
+              <Tooltip contentStyle={{ backgroundColor: darkMode ? '#333' : '#fff', color: darkMode ? '#eee' : '#000' }} />
+              <Legend />
+              <Bar dataKey="miles" fill="#8884d8" onClick={handleBarClick} style={{ cursor: 'pointer' }} />
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
     </div>
 
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: '2rem', marginBottom: '2rem' }}>
@@ -624,6 +625,7 @@ export default function Dashboard() {
           </AreaChart>
         </ResponsiveContainer>
       </div>
+
 
       <div className="card">
 

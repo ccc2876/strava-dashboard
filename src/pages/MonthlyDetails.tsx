@@ -135,55 +135,56 @@ export default function MonthlyDetails() {
           }
         };
 
-        return (
-          <div className={darkMode ? 'container dark' : 'container'}>
-            <header style={{ padding: 10 }}>
-              <button onClick={toggleDarkMode}>
-                {darkMode ? '☀️' : '🌙'}
-              </button>
-            </header>
 
-            <div style={{ padding: '0 1rem' }}>
-              <button
-                onClick={() => navigate(-1)}
-                style={{
-                  padding: '0.5rem 1rem',
-                  marginBottom: '1rem',
-                  cursor: 'pointer',
-                  borderRadius: '4px',
-                  border: '1px solid #ccc',
-                  backgroundColor: darkMode ? '#333' : '#eee',
-                  color: darkMode ? '#eee' : '#000',
-                  transition: 'background-color 0.3s, color 0.3s',
-                }}
-              >
-                ← Back
-              </button>
-            </div>
+  const bgClass = darkMode ? 'bg-gray-950' : 'bg-gray-50';
+  const textClass = darkMode ? 'text-white' : 'text-gray-800';
+  return (
+          <div
+      className={`min-h-screen ${bgClass} ${textClass} p-4 sm:p-6`}
+      style={{ padding: '1rem', minHeight: '100vh', backgroundColor: darkMode ? '#1a202c' : '#f9fafb', color: darkMode ? '#ffffff' : '#1f2937' }}
+    >
+      <header className="flex justify-between items-center mb-6">
+        <button
+          onClick={() => navigate(-1)}
+              className="nav-button"
+          style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: darkMode ? '#1e40af' : '#2563eb', color: darkMode ? '#ffffff' : '#fff' }}
+        >
+          <span>←</span> Back
+
+        </button>
+        <button
+          onClick={toggleDarkMode}
+          className={`p-2 rounded-full ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-200 hover:bg-gray-300'} transition`}
+          style={{ padding: '0.5rem', borderRadius: '50%', backgroundColor: darkMode ? '#374151' : '#e5e7eb' }}
+        >
+          {darkMode ? '☀️' : '🌙'}
+        </button>
+      </header>
 
             <div style={{ padding: 20 }}>
             <h1 style={{ color: darkMode ? '#eee' : '#000' }}>Monthly Run Details</h1>
 
             {/* Parent container: align nav + summary horizontally */}
-            <div
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: 12,
-                color: darkMode ? '#ccc' : '#333',
-                flexWrap: 'wrap', // allows wrapping on small widths
-                gap: '1rem',
-              }}
+          
+              <div className="card">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem', flexWrap: 'wrap', gap: '1rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <button
+              onClick={goPrevMonth}
+              className="nav-button"
             >
-              {/* Month navigation */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                <button onClick={goPrevMonth}>Previous</button>
-                <span style={{ fontWeight: 'bold', minWidth: 150, textAlign: 'center' }}>
-                  {new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' })}
-                </span>
-                <button onClick={goNextMonth}>Next</button>
-              </div>
+              <span>←</span>
+            </button>
+            <span style={{ fontWeight: 600, minWidth: '150px', textAlign: 'center' }}>
+              {new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' })}
+            </span>
+            <button
+              onClick={goNextMonth}
+              className="nav-button"
+            >
+              <span>&rarr;</span>
+            </button>
+          </div>
 
               {/* Monthly totals summary */}
               <div
@@ -208,6 +209,7 @@ export default function MonthlyDetails() {
                 <div><strong>Avg Pace:</strong> {formatPace(avgPace)}</div>
               </div>
             </div>
+          </div>
           </div>
 
           <div>

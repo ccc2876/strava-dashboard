@@ -47,8 +47,7 @@ export default function WeeklyDetails() {
       <header className="flex justify-between items-center mb-6">
         <button
           onClick={() => navigate(-1)}
-          className={`flex items-center gap-2 px-4 py-2 rounded-lg ${darkMode ? 'bg-blue-900 hover:bg-blue-800' : 'bg-blue-600 hover:bg-blue-700'} ${textClass} transition`}
-          style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: darkMode ? '#1e40af' : '#2563eb', color: darkMode ? '#ffffff' : '#fff' }}
+          className="nav-button"
         >
           <span>←</span> Back
         </button>

@@ -42,11 +42,11 @@ function getIntensityColor(miles: number = 0, darkMode: boolean) {
   return '#196127';
 }
 
-export default function YearDetailsPage() {
+export default function YearDetails() {
   const { year: yearParam } = useParams();
   const year = parseInt(yearParam || new Date().getFullYear().toString(), 10);
   const { activities } = useActivities();
-  const { darkMode } = useDarkMode();
+  const { darkMode, toggleDarkMode } = useDarkMode();
   const navigate = useNavigate();
 
   const heatmapData = getRunHeatmapDataForYear(activities, year);
@@ -69,28 +69,37 @@ export default function YearDetailsPage() {
     weeks.push(heatmapData.slice(i, i + 7));
   }
 
+  const bgClass = darkMode ? 'bg-gray-950' : 'bg-gray-50';
+  const textClass = darkMode ? 'text-white' : 'text-gray-800';
   return (
-    <div className={darkMode ? 'container dark' : 'container'}>
-      <div style={{ padding: '0 1rem' }}>
+    <div
+      className={`min-h-screen ${bgClass} ${textClass} p-4 sm:p-6`}
+      style={{ padding: '1rem', minHeight: '100vh', backgroundColor: darkMode ? '#1a202c' : '#f9fafb', color: darkMode ? '#ffffff' : '#1f2937' }}
+    >
+      <header className="flex justify-between items-center mb-6">
         <button
           onClick={() => navigate(-1)}
-          style={{
-            padding: '0.5rem 1rem',
-            marginBottom: '1rem',
-            cursor: 'pointer',
-            borderRadius: '4px',
-            border: '1px solid #ccc',
-            backgroundColor: darkMode ? '#333' : '#eee',
-            color: darkMode ? '#eee' : '#000',
-          }}
+              className="nav-button"
+          style={{ padding: '0.5rem 1rem', borderRadius: '0.5rem', backgroundColor: darkMode ? '#1e40af' : '#2563eb', color: darkMode ? '#ffffff' : '#fff' }}
         >
-          ← Back
+          <span>←</span> Back
+
         </button>
-      </div>
+        <button
+          onClick={toggleDarkMode}
+          className={`p-2 rounded-full ${darkMode ? 'bg-gray-800 hover:bg-gray-700' : 'bg-gray-200 hover:bg-gray-300'} transition`}
+          style={{ padding: '0.5rem', borderRadius: '50%', backgroundColor: darkMode ? '#374151' : '#e5e7eb' }}
+        >
+          {darkMode ? '☀️' : '🌙'}
+        </button>
+      </header>
 
-      <div style={{ padding: 20 }}>
-        <h1 style={{ color: darkMode ? '#eee' : '#000' }}>Year in Runs - {year}</h1>
 
+<h1 style={{ fontSize: '1.875rem', fontWeight: 700, marginBottom: '2rem', textAlign: 'center', color: darkMode ? '#ffffff' : '#1f2937' }}>
+        Year in Runs - {year}
+      </h1>
+
+      <div className="card">
         <div
           style={{
             display: 'flex',
@@ -101,32 +110,31 @@ export default function YearDetailsPage() {
             color: darkMode ? '#ccc' : '#333',
           }}
         >
+
           <div><strong>Total Distance:</strong> {totalMiles.toFixed(1)} mi</div>
           <div><strong>Days Run:</strong> {daysRun}/{daysSoFar}</div>
           <div><strong>Avg Daily:</strong> {avgDaily.toFixed(2)} mi</div>
           <div><strong>Projected Total:</strong> {projectedTotal.toFixed(0)} mi</div>
         </div>
 
-        <div style={{ display: 'flex', gap: 2, overflowX: 'auto', minWidth: 365 }}>
+        <div className="heatmap">
           {weeks.map((week, i) => (
-            <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <div key={i} className="heatmap-week">
               {week.map(({ date, miles }) => (
                 <div
                   key={date}
                   title={miles ? `${date} - ${miles.toFixed(1)} mi` : `${date} - No run`}
-                  style={{
-                    width: 12,
-                    height: 12,
-                    borderRadius: 2,
-                    backgroundColor: getIntensityColor(miles, darkMode),
-                  }}
-                />
+                  className="heatmap-day"
+                  style={{ backgroundColor: getIntensityColor(miles, darkMode) }}
+                >
+                  {miles > 0 && Math.round(miles)} {/* Display rounded mileage if > 0 */}
+                </div>
               ))}
             </div>
           ))}
         </div>
 
-        <small style={{ marginTop: '0.5rem', display: 'block', color: darkMode ? '#ccc' : '#666' }}>
+        <small style={{ marginTop: '0.5rem', display: 'block', color: darkMode ? '#9ca3af' : '#4b5563', fontSize: '0.875rem' }}>
           Color intensity = run distance. Darker = longer runs.
         </small>
       </div>
